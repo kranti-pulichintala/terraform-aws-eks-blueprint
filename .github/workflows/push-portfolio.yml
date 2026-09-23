@@ -47,7 +47,7 @@ jobs:
                 const cp = {message: "Add " + repo + " portfolio project", tree: tree.sha};
                 if (baseSha) cp.parents = [baseSha];
                 const c = await gh("POST", "/repos/" + OWNER + "/" + repo + "/git/commits", cp);
-                if (baseSha) await gh("PATCH", "/repos/" + OWNER + "/" + repo + "/git/ref/heads/main", {sha: c.sha});
+                if (baseSha) await gh("PATCH", "/repos/" + OWNER + "/" + repo + "/git/refs/heads/main", {sha: c.sha});
                 else await gh("POST", "/repos/" + OWNER + "/" + repo + "/git/refs", {ref: "refs/heads/main", sha: c.sha});
                 out.push(repo + " OK " + c.sha.slice(0, 7));
               } catch (e) { out.push(repo + " FAILED: " + e.message); }
@@ -60,7 +60,7 @@ jobs:
                 {base_tree: ct.tree.sha, tree: [{path: "payload.json", mode: "100644", type: "blob", sha: null}]});
               const c = await gh("POST", "/repos/" + OWNER + "/" + repo + "/git/commits",
                 {message: "Remove staging payload", tree: tree.sha, parents: [ref.object.sha]});
-              await gh("PATCH", "/repos/" + OWNER + "/" + repo + "/git/ref/heads/main", {sha: c.sha});
+              await gh("PATCH", "/repos/" + OWNER + "/" + repo + "/git/refs/heads/main", {sha: c.sha});
               out.push("payload.json cleanup OK");
             } catch (e) { out.push("payload.json cleanup FAILED: " + e.message); }
             console.log("PUSH COMPLETE");
